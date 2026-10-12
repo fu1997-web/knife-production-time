@@ -37,34 +37,35 @@ footer{text-align:center;color:#7b8798;font-size:11px;padding:10px}
  <div><label for="lot">ロットID</label><input id="lot" value="LOT-001" placeholder="例：LOT-202610-001"></div>
  <div><label for="qty">数量（丁）</label><input id="qty" type="number" min="1" value="10"></div>
 </div>
-<label for="product">商品名・仕様</label><input id="product" placeholder="例：切付け牛刀 21cm">
+<label for="product">包丁番号・種類</label><select id="product"><option value="">選択してください</option><option value="KN003">3：VG10 16層 ダマスカス 三徳 130</option><option value="KN004">4：VG10 16層 ダマスカス 牛刀 210</option><option value="KN005">5：VG10 16層 ダマスカス ペティ 135</option><option value="KN006">6：VG10 16層 ダマスカス 菜切 170</option><option value="KN007">7：VG10 16層 ダマスカス 文化 190</option><option value="KN008">8：VG10 16層 ダマスカス 切付ペティ 140</option><option value="KN009">9：VG10 16層 ダマスカス 筋引 240</option><option value="KN010">10：VG10 16層 ダマスカス 文化 170</option><option value="KN011">11：VG10 黒打ち 三徳 165</option><option value="KN012">12：VG10 黒打ち 三徳 130</option><option value="KN013">13：VG10 黒打ち 牛刀 210</option><option value="KN014">14：VG10 黒打ち ペティ 135</option><option value="KN015">15：VG10 黒打ち 菜切 170</option><option value="KN016">16：VG10 黒打ち 筋引 240</option><option value="KN017">17：VG10 黒打ち 文化 170</option><option value="KN018">18：銀3積層 16層 ダマスカス 文化 180</option><option value="KN019">19：銀3積層 16層 ダマスカス 文化 210</option><option value="KN020">20：銀3積層 16層 ダマスカス 切付ペティ 135</option><option value="KN021">21：銀3積層 16層 ダマスカス 文化 170</option><option value="KN022">22：銀3梨地 ペティ 120</option><option value="KN023">23：銀3梨地 三徳 165</option><option value="KN024">24：VG10 8層 三徳 170 槌目</option><option value="KN025">25：VG10 8層 ペティ 135 槌目</option><option value="KN026">26：VG10 67層 ダマスカス 文化 170</option><option value="KN027">27：VG10 67層 ダマスカス 切付ペティ 135</option><option value="OTHER">その他</option></select><div class="muted" id="knifeCodeInfo" style="margin-top:6px">包丁番号：未選択（包丁番号は種類ごとに固定、ロット番号は製造のまとまりごとに別管理）</div>
 <div class="row">
  <button id="scanBtn" class="secondary">📷 QR・バーコード読取</button>
  <button id="manualBtn" class="secondary">コード入力</button>
 </div>
 <div id="scannerBox" class="hidden"><div id="reader"></div><button id="stopScan" class="secondary small" style="margin-top:8px">カメラを閉じる</button></div>
-<p class="muted">QRコードの中身はロットID（例：LOT-001）にしてください。読み取れない場合はロットIDを手入力できます。</p>
+<p class="muted">包丁番号は包丁の種類を識別する固定番号（例：KN003）、ロットIDは今回の製造まとまりを識別する番号（例：LOT-261012-01）です。バーコード読取はロットID用です。1回目＝開始、同じロット番号の2回目＝終了・自動保存です。</p>
 </section>
 
 <section class="card">
 <h2>② 工程タイマー</h2>
 <label for="process">工程</label>
 <select id="process">
-<option>鍛造</option><option>焼鈍・下処理</option><option>研削</option><option>焼入れ</option><option>歪取り</option><option>研磨</option><option>柄付け</option><option>仕上げ・検品</option>
+<option>2：ベルトグラインダー（粗刃肉落とし）</option><option>3：縦（刃だし）</option><option>4：横（中）（刃肉落とし）</option><option>5：アゴ</option><option>6：バフ掛け</option><option>7：お湯あらい</option><option>8：検品（キズ）</option><option>9：ブラスト</option><option>10：水荒い</option><option>11：検品（キズ）</option><option>12：打刻</option><option>13：小刃付</option><option>14：検品（切れ味）</option><option>15：柄付け</option><option>16：パテ埋め</option>
 </select>
 <div class="metrics" style="margin:12px 0">
  <div class="metric"><span>状態</span><b id="stateText" style="font-size:16px">未開始</b></div>
  <div class="metric"><span>経過時間</span><b id="elapsed">00:00</b></div>
  <div class="metric"><span>記録件数</span><b id="count">0</b></div>
 </div>
-<div id="activeInfo" class="status">ロットと工程を確認して「開始」を押してください。</div>
+<div id="activeInfo" class="status">工程を選び、バーコードを読むと開始。同じロット・工程をもう一度読むと終了・自動保存します。</div>
+<div id="activeList" class="muted" style="margin-top:8px"></div>
 <div class="row" style="margin-top:10px">
  <button id="start" class="primary">▶ 開始</button>
  <button id="pause" class="secondary" disabled>⏸ 一時停止</button>
  <button id="finish" class="danger" disabled>■ 終了・保存</button>
 </div>
 <label for="memo">メモ（任意）</label><input id="memo" placeholder="例：材料待ち、刃先修正など">
-<p class="muted">一時停止中は時間を加算しません。1つのロットで同時に動かせるタイマーは1つです。</p>
+<p class="muted">一時停止中は時間を加算しません。複数のロット・工程を同時に計測できます。バーコードを読むと、同じロット＋工程なら終了保存、未計測なら新しく開始します。</p>
 </section>
 
 <section class="card">
@@ -80,122 +81,98 @@ footer{text-align:center;color:#7b8798;font-size:11px;padding:10px}
 <div class="row stack" style="margin-top:12px"><button id="csv" class="dark">CSVを書き出す</button><button id="backup" class="secondary">データをバックアップ</button><button id="restoreBtn" class="secondary">バックアップを読込</button><input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></div>
 <p class="muted">記録はこのブラウザ内に保存されます。端末・ブラウザのデータ削除や機種変更で消える可能性があるため、定期的にバックアップしてください。</p>
 </section>
-<footer>製造時間管理・実用版パッケージ 1.2（QR・バーコード読取対応）</footer>
+<footer>生産時間管理（バーコード読取で開始・終了を自動記録）</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
 const KEY='knife_lot_time_records_v1';
-let records=load(), active=null, tick=null, scanner=null, detector=null, scanStream=null;
+let records=load(), actives=loadActives(), tick=null, html5QrCode=null, scannerLoading=null;
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
-function persist(){localStorage.setItem(KEY,JSON.stringify(records));render()}
+function loadActives(){try{return JSON.parse(localStorage.getItem(KEY+'_actives')||'[]')}catch(e){return []}}
+function saveActives(){localStorage.setItem(KEY+'_actives',JSON.stringify(actives))}
+function persist(){localStorage.setItem(KEY,JSON.stringify(records));saveActives();render()}
 function pad(n){return String(n).padStart(2,'0')}
 function dt(v){return v?new Date(v).toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}):''}
 function fmt(sec){sec=Math.max(0,Math.floor(sec));let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
-function elapsedNow(){if(!active)return 0;return active.accumulated+(active.running?Math.max(0,(Date.now()-active.segmentStart)/1000):0)}
-function updateTimer(){if(!active)return;$('elapsed').textContent=fmt(elapsedNow());}
+function elapsedNow(a){return a.accumulated+(a.running?Math.max(0,(Date.now()-a.segmentStart)/1000):0)}
+function selectedKey(){return $('lot').value.trim()+'||'+$('process').value}
+function productLabel(code){const el=$('product').selectedOptions[0];return code==='OTHER'?'その他':(el&&code?el.textContent.replace(/^\d+：/, ''):'')}
+function updateKnifeCodeInfo(){const code=$('product').value;$('knifeCodeInfo').textContent='包丁番号：'+(code||'未選択')+(code?' / '+productLabel(code):'')+'（ロット番号とは別管理）'}
+function selectedActive(){return actives.find(a=>a.key===selectedKey())||null}
+function updateTimer(){renderActiveSummary()}
+function renderActiveSummary(){
+ const a=selectedActive();
+ $('elapsed').textContent=a?fmt(elapsedNow(a)):'00:00';
+ $('stateText').textContent=a?(a.running?'計測中':'一時停止'):'未計測';
+ $('activeInfo').textContent=a?`${a.lot} / ${a.productName||'包丁未選択'}（${a.productCode||'番号なし'}） / ${a.qty}丁 / ${a.process}`:'工程を選び、バーコードを読むと開始。同じロット・工程をもう一度読むと終了・自動保存します。';
+ $('activeInfo').className='status '+(a&&a.running?'running':'');
+ $('start').disabled=!!a;$('pause').disabled=!a;$('finish').disabled=!a;
+ $('pause').textContent=a&&a.running?'⏸ 一時停止':'▶ 再開';
+ $('activeList').innerHTML=actives.length?'<b>計測中・一時停止中の生産</b><br>'+actives.map(x=>`${escapeHtml(x.lot)} / ${escapeHtml(x.process)}：${fmt(elapsedNow(x))}${x.running?'（計測中）':'（一時停止）'}`).join('<br>'):'現在、計測中の生産はありません。';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function render(){
  $('count').textContent=records.length;
- const total=records.reduce((a,r)=>a+r.seconds,0);
- $('totalMinutes').textContent=(total/60).toFixed(1);
- const currentQty=Math.max(1,Number($('qty').value)||10);
- $('perPiece').textContent=(total/60/currentQty).toFixed(1);
+ const total=records.reduce((a,r)=>a+r.seconds,0);$('totalMinutes').textContent=(total/60).toFixed(1);
+ const currentQty=Math.max(1,Number($('qty').value)||10);$('perPiece').textContent=(total/60/currentQty).toFixed(1);
  $('lotCount').textContent=new Set(records.map(r=>r.lot)).size;
  const body=$('recordRows');body.innerHTML='';
- [...records].reverse().forEach((r,revIdx)=>{
-  const tr=document.createElement('tr');
-  [r.lot, r.process, dt(r.start), dt(r.end), (r.seconds/60).toFixed(1)].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.appendChild(td)});
-  const td=document.createElement('td'),b=document.createElement('button');b.textContent='削除';b.className='secondary small';b.onclick=()=>{if(confirm('この記録を削除しますか？')){records.splice(records.length-1-revIdx,1);persist()}};td.appendChild(b);tr.appendChild(td);body.appendChild(tr);
- });
+ [...records].reverse().forEach((r,revIdx)=>{const tr=document.createElement('tr');[r.lot,r.process,dt(r.start),dt(r.end),(r.seconds/60).toFixed(1)].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.appendChild(td)});const td=document.createElement('td'),b=document.createElement('button');b.textContent='削除';b.className='secondary small';b.onclick=()=>{if(confirm('この記録を削除しますか？')){records.splice(records.length-1-revIdx,1);persist()}};td.appendChild(b);tr.appendChild(td);body.appendChild(tr)});
  const groups={};records.forEach(r=>{let k=r.lot+'||'+r.process;if(!groups[k])groups[k]={lot:r.lot,process:r.process,seconds:0,qty:r.qty};groups[k].seconds+=r.seconds;groups[k].qty=r.qty});
- const sb=$('summaryRows');sb.innerHTML='';
- Object.values(groups).forEach(g=>{let tr=document.createElement('tr');[g.lot,g.process,(g.seconds/60).toFixed(1),(g.seconds/60/Math.max(1,g.qty)).toFixed(1)].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.appendChild(td)});sb.appendChild(tr)});
- if(active){$('stateText').textContent=active.running?'計測中':'一時停止';$('activeInfo').textContent=`${active.lot} / ${active.product||'商品名未入力'} / ${active.qty}丁 / ${active.process}`;$('activeInfo').className='status '+(active.running?'running':'');$('start').disabled=true;$('pause').disabled=false;$('finish').disabled=false;$('pause').textContent=active.running?'⏸ 一時停止':'▶ 再開'}
- else{$('stateText').textContent='未開始';$('activeInfo').textContent='ロットと工程を確認して「開始」を押してください。';$('activeInfo').className='status';$('start').disabled=false;$('pause').disabled=true;$('finish').disabled=true;$('pause').textContent='⏸ 一時停止';$('elapsed').textContent='00:00'}
+ const sb=$('summaryRows');sb.innerHTML='';Object.values(groups).forEach(g=>{let tr=document.createElement('tr');[g.lot,g.process,(g.seconds/60).toFixed(1),(g.seconds/60/Math.max(1,g.qty)).toFixed(1)].forEach(v=>{let td=document.createElement('td');td.textContent=v;tr.appendChild(td)});sb.appendChild(tr)});
+ renderActiveSummary();
 }
-$('start').onclick=()=>{
- if(active)return;
- const lot=$('lot').value.trim();if(!lot){alert('ロットIDを入力してください');return}
- const qty=Math.max(1,Number($('qty').value)||10);
- active={lot,product:$('product').value.trim(),qty,process:$('process').value,memo:$('memo').value.trim(),start:Date.now(),segmentStart:Date.now(),accumulated:0,running:true};
- localStorage.setItem(KEY+'_active',JSON.stringify(active));persist();tick=setInterval(updateTimer,500);
-};
-$('pause').onclick=()=>{
- if(!active)return;
- if(active.running){active.accumulated+=Math.max(0,(Date.now()-active.segmentStart)/1000);active.running=false;active.segmentStart=null}
- else{active.running=true;active.segmentStart=Date.now()}
- localStorage.setItem(KEY+'_active',JSON.stringify(active));render();if(active.running&&!tick)tick=setInterval(updateTimer,500);
-};
-$('finish').onclick=()=>{
- if(!active)return;
- if(active.running)active.accumulated+=Math.max(0,(Date.now()-active.segmentStart)/1000);
+function startFor(lot){
+ const key=lot+'||'+$('process').value;
+ if(actives.some(a=>a.key===key)){alert('このロット・工程はすでに計測中です。同じバーコードを読むと終了します。');return}
+ const now=Date.now();
+ actives.push({key,lot,productCode:$('product').value,productName:productLabel($('product').value),product:productLabel($('product').value),qty:Math.max(1,Number($('qty').value)||10),process:$('process').value,memo:$('memo').value.trim(),start:now,segmentStart:now,accumulated:0,running:true});
+ $('lot').value=lot;persist();ensureTick();
+}
+function finishActive(a){
+ if(!a)return;
+ if(a.running)a.accumulated+=Math.max(0,(Date.now()-a.segmentStart)/1000);
  const end=Date.now();
- records.push({id:crypto.randomUUID?crypto.randomUUID():String(end),lot:active.lot,product:active.product,qty:active.qty,process:active.process,start:active.start,end,seconds:Math.round(active.accumulated),memo:active.memo});
- active=null;localStorage.removeItem(KEY+'_active');if(tick){clearInterval(tick);tick=null}persist();
-};
+ records.push({id:crypto.randomUUID?crypto.randomUUID():String(end),lot:a.lot,productCode:a.productCode||'',productName:a.productName||a.product||'',product:a.productName||a.product||'',qty:a.qty,process:a.process,start:a.start,end,seconds:Math.round(a.accumulated),memo:a.memo});
+ actives=actives.filter(x=>x.key!==a.key);persist();
+ if(!actives.length&&tick){clearInterval(tick);tick=null}
+}
+function ensureTick(){if(!tick)tick=setInterval(updateTimer,500)}
+$('start').onclick=()=>{const lot=$('lot').value.trim();if(!lot){alert('ロットIDを入力してください');return}startFor(lot)};
+$('pause').onclick=()=>{const a=selectedActive();if(!a)return;if(a.running){a.accumulated+=Math.max(0,(Date.now()-a.segmentStart)/1000);a.running=false;a.segmentStart=null}else{a.running=true;a.segmentStart=Date.now()}persist();if(a.running)ensureTick()};
+$('finish').onclick=()=>finishActive(selectedActive());
 $('qty').onchange=render;
+$('lot').onchange=renderActiveSummary;$('process').onchange=renderActiveSummary;$('product').onchange=updateKnifeCodeInfo;
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));$('records').classList.toggle('hidden',b.dataset.tab!=='records');$('summary').classList.toggle('hidden',b.dataset.tab!=='summary')});
-$('manualBtn').onclick=()=>{const v=prompt('ロットIDまたはバーコードの内容を入力');if(v)$('lot').value=v.trim()};
-let html5QrCode=null, scannerLoading=null;
-async function loadScannerLibrary(){
- if(window.Html5Qrcode)return;
- if(scannerLoading)return scannerLoading;
- scannerLoading=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');
-  script.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
-  script.onload=resolve;script.onerror=()=>reject(new Error('ライブラリを読み込めません'));
-  document.head.appendChild(script);
- });
- return scannerLoading;
-}
+$('manualBtn').onclick=()=>{const v=prompt('ロットIDまたはバーコードの内容を入力');if(v){$('lot').value=v.trim();renderActiveSummary()}};
+async function loadScannerLibrary(){if(window.Html5Qrcode)return;if(scannerLoading)return scannerLoading;scannerLoading=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('読み取りライブラリを読み込めません'));document.head.appendChild(script)});return scannerLoading}
 $('scanBtn').onclick=async()=>{
- $('scannerBox').classList.remove('hidden');
- $('reader').innerHTML='<p class="muted">カメラを準備しています…</p>';
- $('scanBtn').disabled=true;
+ $('scannerBox').classList.remove('hidden');$('reader').innerHTML='<p class="muted">カメラを準備しています…</p>';$('scanBtn').disabled=true;
  try{
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('カメラを使えません。SafariでHTTPSのアプリURLを開いてください。');
-  await loadScannerLibrary();
-  $('reader').innerHTML='';
-  html5QrCode=new Html5Qrcode('reader', {formatsToSupport:[
-   Html5QrcodeSupportedFormats.QR_CODE,
-   Html5QrcodeSupportedFormats.CODE_128,
-   Html5QrcodeSupportedFormats.CODE_39,
-   Html5QrcodeSupportedFormats.CODE_93,
-   Html5QrcodeSupportedFormats.EAN_13,
-   Html5QrcodeSupportedFormats.EAN_8,
-   Html5QrcodeSupportedFormats.UPC_A,
-   Html5QrcodeSupportedFormats.UPC_E,
-   Html5QrcodeSupportedFormats.ITF
-  ], verbose:false});
-  await html5QrCode.start({facingMode:'environment'}, {fps:10,qrbox:{width:250,height:150},aspectRatio:1.5}, (decodedText)=>{
-   $('lot').value=decodedText.trim();
-   stopScan();
-   alert('読み取りました：'+decodedText.trim());
-  }, ()=>{});
- }catch(e){
-  $('reader').innerHTML='';
-  alert('読み取りを開始できませんでした。Safariでアプリを開き、カメラの使用を許可してください。通信環境も確認してください。詳細：'+(e.message||e));
-  $('scannerBox').classList.add('hidden');
- }finally{$('scanBtn').disabled=false}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('SafariでHTTPSのアプリURLを開いてください。');
+  await loadScannerLibrary();$('reader').innerHTML='';
+  html5QrCode=new Html5Qrcode('reader',{formatsToSupport:[Html5QrcodeSupportedFormats.QR_CODE,Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.CODE_39,Html5QrcodeSupportedFormats.CODE_93,Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.ITF],verbose:false});
+  let handled=false;
+  await html5QrCode.start({facingMode:'environment'},{fps:10,qrbox:{width:250,height:150},aspectRatio:1.5},async decodedText=>{
+   if(handled)return;const code=decodedText.trim();if(!code)return;handled=true;await stopScan();
+   $('lot').value=code;
+   const key=code+'||'+$('process').value;
+   const existing=actives.find(a=>a.key===key);
+   if(existing){finishActive(existing);alert(`自動保存しました：${code} / ${existing.process}`)}
+   else{startFor(code);alert(`作業開始：${code} / ${$('process').value}`)}
+   $('scanBtn').disabled=false;
+  },()=>{});
+ }catch(e){$('reader').innerHTML='';alert('読み取りを開始できませんでした。Safariでカメラを許可し、通信環境を確認してください。詳細：'+(e.message||e));$('scannerBox').classList.add('hidden')}finally{$('scanBtn').disabled=false}
 };
-async function stopScan(){
- if(html5QrCode){
-  try{if(html5QrCode.isScanning)await html5QrCode.stop();}catch(e){}
-  try{await html5QrCode.clear();}catch(e){}
-  html5QrCode=null;
- }
- $('reader').replaceChildren();$('scannerBox').classList.add('hidden');$('scanBtn').disabled=false;
-}
+async function stopScan(){if(html5QrCode){try{if(html5QrCode.isScanning)await html5QrCode.stop()}catch(e){}try{await html5QrCode.clear()}catch(e){}html5QrCode=null}$('reader').replaceChildren();$('scannerBox').classList.add('hidden');$('scanBtn').disabled=false}
 $('stopScan').onclick=stopScan;
-$('csv').onclick=()=>{
- const rows=[['ロットID','商品名','数量','工程','開始日時','終了日時','作業時間(秒)','作業時間(分)','メモ'],...records.map(r=>[r.lot,r.product,r.qty,r.process,dt(r.start),dt(r.end),r.seconds,(r.seconds/60).toFixed(2),r.memo])];
- const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='製造時間記録.csv';a.click();URL.revokeObjectURL(a.href);
-};
-$('backup').onclick=()=>{const data={version:1,exportedAt:new Date().toISOString(),records,active};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='製造時間バックアップ.json';a.click();URL.revokeObjectURL(a.href)};
+$('csv').onclick=()=>{const rows=[['包丁番号','包丁名','ロットID','数量','工程','開始日時','終了日時','作業時間(秒)','作業時間(分)','メモ'],...records.map(r=>[r.productCode||'',r.productName||r.product,r.lot,r.qty,r.process,dt(r.start),dt(r.end),r.seconds,(r.seconds/60).toFixed(2),r.memo])];const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='生産時間記録.csv';a.click();URL.revokeObjectURL(a.href)};
+$('backup').onclick=()=>{const data={version:2,exportedAt:new Date().toISOString(),records,actives};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='生産時間バックアップ.json';a.click()};
 $('restoreBtn').onclick=()=>$('restoreFile').click();
-$('restoreFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.records))throw new Error();if(confirm(`${d.records.length}件の記録を読み込みます。現在の記録に追加しますか？「キャンセル」で置き換えます。`)){records=records.concat(d.records)}else{records=d.records}persist();alert('読み込みました')}catch(err){alert('バックアップファイルを読み込めませんでした')}e.target.value=''};
-try{active=JSON.parse(localStorage.getItem(KEY+'_active')||'null');if(active&&active.running){active.accumulated+=Math.max(0,(Date.now()-active.segmentStart)/1000);active.segmentStart=Date.now()}if(active){tick=setInterval(updateTimer,500)}}catch(e){active=null}
-render();updateTimer();
+$('restoreFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.records))throw new Error();if(confirm(`${d.records.length}件の記録を現在の記録に追加しますか？「キャンセル」で置き換えます。`)){records=records.concat(d.records)}else{records=d.records}persist();alert('記録を読み込みました')}catch(err){alert('バックアップを読み込めませんでした')}e.target.value=''};
+try{const old=JSON.parse(localStorage.getItem(KEY+'_active')||'null');if(old){actives.push(old);localStorage.removeItem(KEY+'_active')}const stored=JSON.parse(localStorage.getItem(KEY+'_actives')||'[]');if(stored.length)actives=stored;actives.forEach(a=>{if(a.running){a.accumulated+=Math.max(0,(Date.now()-a.segmentStart)/1000);a.segmentStart=Date.now()}});if(actives.length)ensureTick()}catch(e){actives=[]}
+updateKnifeCodeInfo();
+render();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
