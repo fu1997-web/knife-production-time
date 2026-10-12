@@ -14,28 +14,63 @@ main{max-width:760px;margin:auto;padding:16px 12px 42px}.card{background:linear-
 input,select,textarea{width:100%;padding:12px;border:1px solid #35414e;border-radius:9px;background:#0d1218;font-size:16px;color:#f1f5f9;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #56d6c21a}button{border:1px solid transparent;border-radius:9px;padding:13px 12px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .12s,filter .12s}button:active{transform:scale(.985)}.primary{background:var(--accent);color:#071311}.danger{background:#ef6464;color:#210808}.secondary{background:#202a35;color:#e7edf3;border-color:#35414e}.dark{background:#e9eef3;color:#111820}.small{font-size:12px;padding:9px}.status{background:#112b2a;border:1px solid #20524d;border-radius:9px;padding:12px;margin-top:10px;font-size:13px;color:#c9fff4}.status.running{background:#302719;border-color:#66502a;color:#ffe4a5}.muted{font-size:12px;color:#9aa7b5;line-height:1.65}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#0d1319;border:1px solid #28323d;border-radius:10px;padding:11px}.metric b{display:block;font-size:20px;color:#f2f6fa;font-variant-numeric:tabular-nums}.metric span{font-size:10px;color:#9aa7b5}.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{flex:1}.tabs button.active{background:var(--accent);color:#071311;border-color:var(--accent)}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px 7px;border-bottom:1px solid #28313b;vertical-align:top}th{color:#aab6c3;font-weight:650;background:#1a222b}.tablewrap{overflow-x:auto}.pill{display:inline-block;padding:4px 7px;border-radius:5px;background:#27313d;color:#dbe4ec;font-size:11px;white-space:nowrap}.pill.live{background:#4a391b;color:#ffe0a0}.hidden{display:none!important}#reader{width:100%;overflow:hidden;border-radius:10px;margin-top:10px}#reader video{width:100%}footer{text-align:center;color:#748291;font-size:10px;padding:12px;letter-spacing:.04em}a{color:var(--accent)}
 @media(max-width:430px){.metrics{grid-template-columns:repeat(3,1fr)}.metric b{font-size:17px}.row.stack{flex-direction:column}main{padding:12px 10px 32px}.card{padding:14px;border-radius:12px}}
 </style>
+
+<style id="motion-enhancements">
+:root { --motion-fast: 160ms; --motion-mid: 260ms; }
+html { scroll-behavior: smooth; }
+body { animation: page-enter 420ms ease-out both; }
+button, .btn, select, input, textarea, .card, .panel, .process-card, .lot-card, .stat-card, a {
+  transition: transform var(--motion-fast) ease, box-shadow var(--motion-mid) ease,
+              background-color var(--motion-mid) ease, border-color var(--motion-mid) ease,
+              opacity var(--motion-mid) ease;
+}
+button:active, .btn:active { transform: scale(.97); }
+button:hover, .btn:hover { filter: brightness(1.06); }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(86,214,194,.18);
+}
+.card:hover, .panel:hover, .process-card:hover, .lot-card:hover, .stat-card:hover {
+  transform: translateY(-2px);
+}
+#stateText, .status, .badge { transition: all 220ms ease; }
+.is-scanning { animation: scan-pulse 1.15s ease-in-out infinite; }
+.is-success { animation: success-pop 320ms cubic-bezier(.2,.8,.2,1); }
+.is-active { animation: active-glow 1.8s ease-in-out infinite; }
+.toast, .notice, .alert-box { animation: toast-in 240ms ease-out both; }
+.progress-bar, .progress-fill { transition: width 420ms cubic-bezier(.22,.61,.36,1); }
+@keyframes page-enter { from { opacity: 0; transform: translateY(5px); } to { opacity:1; transform:translateY(0); } }
+@keyframes scan-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(86,214,194,.16); } 50% { box-shadow: 0 0 0 7px rgba(86,214,194,0); } }
+@keyframes success-pop { 0% { transform: scale(.97); } 65% { transform: scale(1.025); } 100% { transform: scale(1); } }
+@keyframes active-glow { 0%,100% { border-color: rgba(86,214,194,.35); } 50% { border-color: rgba(86,214,194,.9); } }
+@keyframes toast-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+
 </head>
 <body>
 <header><h1>生産時間管理</h1><p>ロット単位で工程ごとの実作業時間を記録</p></header>
 <main>
 <section class="card">
-<h2>① スキャン操作（包丁・ロット・工程）</h2>
+<h2>① 包丁名を選択・ロット／工程をスキャン</h2>
 <div class="row">
  <div><label for="lot">ロットID</label><input id="lot" value="LOT-001" placeholder="例：LOT-202610-001"></div>
  <div><label for="qty">数量（丁）</label><input id="qty" type="number" min="1" value="10"></div>
 </div>
-<label for="product">包丁番号・種類</label><select id="product"><option value="">選択してください</option><option value="KN003">3：VG10 16層 ダマスカス 三徳 130</option><option value="KN004">4：VG10 16層 ダマスカス 牛刀 210</option><option value="KN005">5：VG10 16層 ダマスカス ペティ 135</option><option value="KN006">6：VG10 16層 ダマスカス 菜切 170</option><option value="KN007">7：VG10 16層 ダマスカス 文化 190</option><option value="KN008">8：VG10 16層 ダマスカス 切付ペティ 140</option><option value="KN009">9：VG10 16層 ダマスカス 筋引 240</option><option value="KN010">10：VG10 16層 ダマスカス 文化 170</option><option value="KN011">11：VG10 黒打ち 三徳 165</option><option value="KN012">12：VG10 黒打ち 三徳 130</option><option value="KN013">13：VG10 黒打ち 牛刀 210</option><option value="KN014">14：VG10 黒打ち ペティ 135</option><option value="KN015">15：VG10 黒打ち 菜切 170</option><option value="KN016">16：VG10 黒打ち 筋引 240</option><option value="KN017">17：VG10 黒打ち 文化 170</option><option value="KN018">18：銀3積層 16層 ダマスカス 文化 180</option><option value="KN019">19：銀3積層 16層 ダマスカス 文化 210</option><option value="KN020">20：銀3積層 16層 ダマスカス 切付ペティ 135</option><option value="KN021">21：銀3積層 16層 ダマスカス 文化 170</option><option value="KN022">22：銀3梨地 ペティ 120</option><option value="KN023">23：銀3梨地 三徳 165</option><option value="KN024">24：VG10 8層 三徳 170 槌目</option><option value="KN025">25：VG10 8層 ペティ 135 槌目</option><option value="KN026">26：VG10 67層 ダマスカス 文化 170</option><option value="KN027">27：VG10 67層 ダマスカス 切付ペティ 135</option><option value="OTHER">その他</option></select><div class="muted" id="knifeCodeInfo" style="margin-top:6px">包丁番号：未選択（包丁番号は種類ごとに固定、ロット番号は製造のまとまりごとに別管理）</div>
+<label for="product">包丁名（漢字表示）</label><select id="product"><option value="">選択してください</option><option value="KN003">VG10 16層 ダマスカス 三徳 130</option><option value="KN004">VG10 16層 ダマスカス 牛刀 210</option><option value="KN005">VG10 16層 ダマスカス ペティ 135</option><option value="KN006">VG10 16層 ダマスカス 菜切 170</option><option value="KN007">VG10 16層 ダマスカス 文化 190</option><option value="KN008">VG10 16層 ダマスカス 切付ペティ 140</option><option value="KN009">VG10 16層 ダマスカス 筋引 240</option><option value="KN010">VG10 16層 ダマスカス 文化 170</option><option value="KN011">VG10 黒打ち 三徳 165</option><option value="KN012">VG10 黒打ち 三徳 130</option><option value="KN013">VG10 黒打ち 牛刀 210</option><option value="KN014">VG10 黒打ち ペティ 135</option><option value="KN015">VG10 黒打ち 菜切 170</option><option value="KN016">VG10 黒打ち 筋引 240</option><option value="KN017">VG10 黒打ち 文化 170</option><option value="KN018">銀3積層 16層 ダマスカス 文化 180</option><option value="KN019">銀3積層 16層 ダマスカス 文化 210</option><option value="KN020">銀3積層 16層 ダマスカス 切付ペティ 135</option><option value="KN021">銀3積層 16層 ダマスカス 文化 170</option><option value="KN022">銀3梨地 ペティ 120</option><option value="KN023">銀3梨地 三徳 165</option><option value="KN024">VG10 8層 三徳 170 槌目</option><option value="KN025">VG10 8層 ペティ 135 槌目</option><option value="KN026">VG10 67層 ダマスカス 文化 170</option><option value="KN027">VG10 67層 ダマスカス 切付ペティ 135</option><option value="OTHER">その他</option></select><div class="muted" id="knifeCodeInfo" style="margin-top:6px">包丁名を選択してください。包丁名は漢字で表示し、バーコードはロットと工程だけを使います。</div>
 <label for="process">工程（バーコードで自動選択）</label>
 <select id="process">
 <option value="2：ベルトグラインダー（粗刃肉落とし）">2：ベルトグラインダー（粗刃肉落とし）</option><option value="3：縦（刃だし）">3：縦（刃だし）</option><option value="4：横（中）（刃肉落とし）">4：横（中）（刃肉落とし）</option><option value="5：アゴ">5：アゴ</option><option value="6：バフ掛け">6：バフ掛け</option><option value="7：お湯あらい">7：お湯あらい</option><option value="8：検品（キズ）">8：検品（キズ）</option><option value="9：ブラスト">9：ブラスト</option><option value="10：水荒い">10：水荒い</option><option value="11：検品（キズ）">11：検品（キズ）</option><option value="12：打刻">12：打刻</option><option value="13：小刃付">13：小刃付</option><option value="14：検品（切れ味）">14：検品（切れ味）</option><option value="15：柄付け">15：柄付け</option><option value="16：パテ埋め">16：パテ埋め</option>
 </select>
-<div class="muted">同じ画面で包丁・ロット・工程を読み取れます。工程バーコードは1回目で開始、同じロット・工程の2回目で終了・保存します。</div>
+<div class="muted">包丁名を選んでから、ロット番号と工程番号のバーコードを読み取ります。</div>
 <div class="row">
  <button id="scanBtn" class="primary">▦ スキャン開始</button>
  <button id="manualBtn" class="secondary">コード手入力</button>
 </div>
 <div id="scannerBox" class="hidden"><div id="reader"></div><button id="stopScan" class="secondary small" style="margin-top:8px">カメラを閉じる</button></div>
-<p class="muted">読み取り順：①包丁 KN003 → ②ロット LOT-261012-01 → ③工程 PR-03。すべてこのエリアで読み取れます。工程バーコードの1回目で開始、同じロット・工程で2回目に読むと終了・自動保存します。</p>
+<p class="muted">使い方：①包丁名を漢字で選択 → ②ロット LOT-261013-01 を読む → ③工程 PR-03 を読む。工程バーコードで作業開始。終了時はロット番号のバーコードを読むと、そのロットの計測中工程を終了・自動保存します。</p>
 </section>
 
 <section class="card">
@@ -54,7 +89,7 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #35414e;border-ra
  <button id="finish" class="danger" disabled>■ 終了・保存</button>
 </div>
 <label for="memo">メモ（任意）</label><input id="memo" placeholder="例：材料待ち、刃先修正など">
-<p class="muted">工程バーコードの1回目で開始、同じロット・工程で再度読むと終了・自動保存します。別ロットに切り替えるときはロットバーコードを読み取ります。複数ロットの計測は個別に管理します。</p>
+<p class="muted">工程バーコードで開始し、終了時はロット番号を読むと、そのロットの計測中工程を終了・自動保存します。別ロットに切り替えるときはロットバーコードを読み取ります。複数ロットの計測は個別に管理します。</p>
 </section>
 
 <section class="card">
@@ -70,11 +105,11 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #35414e;border-ra
 <div class="row stack" style="margin-top:12px"><button id="csv" class="dark">CSVを書き出す</button><button id="backup" class="secondary">データをバックアップ</button><button id="restoreBtn" class="secondary">バックアップを読込</button><input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></div>
 <p class="muted">記録はこのブラウザ内に保存されます。端末・ブラウザのデータ削除や機種変更で消える可能性があるため、定期的にバックアップしてください。</p>
 </section>
-<footer>生産時間管理（バーコード読取で開始・終了を自動記録）</footer>
+<footer>生産時間管理（ロット・工程バーコードで開始・終了を自動記録）</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
-const KEY='knife_lot_time_records_v1';
+const KEY='knife_lot_time_records_v2';
 const LOTKEY=KEY+'_lot_registry';
 let records=load(), actives=loadActives(), tick=null, html5QrCode=null, scannerLoading=null, lastScanCode='', lastScanAt=0, lotRegistry=loadLotRegistry();
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
@@ -93,14 +128,14 @@ function processOptions(){return [...$('process').options]}
 function processCodeFromLabel(label){const m=String(label).match(/^(\d+)：/);return m?'PR-'+String(m[1]).padStart(2,'0'):''}
 function setProcessByCode(code){const n=Number(String(code).replace(/^PR-?/i,''));const opt=processOptions().find(o=>Number((o.textContent.match(/^(\d+)/)||[])[1])===n);if(!opt)return false;$('process').value=opt.value;renderActiveSummary();return true}
 function setProductCode(code){const opt=[...$('product').options].find(o=>o.value===code);if(!opt)return false;$('product').value=code;updateKnifeCodeInfo();return true}
-function updateKnifeCodeInfo(){const code=$('product').value;$('knifeCodeInfo').textContent='包丁番号：'+(code||'未選択')+(code?' / '+productLabel(code):'')+'（ロット番号とは別管理）'}
+function updateKnifeCodeInfo(){const code=$('product').value;$('knifeCodeInfo').textContent='選択中の包丁：'+(code?productLabel(code):'未選択')+'（包丁名は選択式／バーコードはロット・工程のみ）'}
 function selectedActive(){return actives.find(a=>a.key===selectedKey())||null}
 function updateTimer(){renderActiveSummary()}
 function renderActiveSummary(){
  const a=selectedActive();
  $('elapsed').textContent=a?fmt(elapsedNow(a)):'00:00';
  $('stateText').textContent=a?(a.running?'計測中':'一時停止'):'未計測';
- $('activeInfo').textContent=a?`${a.lot} / ${a.productName||'包丁未選択'}（${a.productCode||'番号なし'}） / ${a.qty}丁 / ${a.process}`:'包丁・ロットを読み取ってから工程バーコードを読んでください。';
+ $('activeInfo').textContent=a?`${a.lot} / ${a.productName||'包丁未選択'} / ${a.qty}丁 / ${a.process}`:'包丁名を選択し、ロット番号を読み取ってください。';
  $('activeInfo').className='status '+(a&&a.running?'running':'');
  $('start').disabled=!!a;$('pause').disabled=!a;$('finish').disabled=!a;
  $('pause').textContent=a&&a.running?'⏸ 一時停止':'▶ 再開';
@@ -120,7 +155,7 @@ function render(){
 }
 function startFor(lot){
  const productCode=$('product').value;
- if(!productCode){alert('先に包丁番号のバーコード（KN003など）を読み取ってください。');return}
+ if(!productCode){alert('先に包丁名を選択してください。');return}
  const key=lot+'||'+$('process').value;
  if(actives.some(a=>a.key===key)){alert('このロット・工程はすでに計測中です。同じバーコードを読むと終了します。');return}
  const now=Date.now();
@@ -140,9 +175,9 @@ $('start').onclick=()=>{const lot=$('lot').value.trim();if(!lot){alert('ロッ�
 $('pause').onclick=()=>{const a=selectedActive();if(!a)return;if(a.running){a.accumulated+=Math.max(0,(Date.now()-a.segmentStart)/1000);a.running=false;a.segmentStart=null}else{a.running=true;a.segmentStart=Date.now()}persist();if(a.running)ensureTick()};
 $('finish').onclick=()=>finishActive(selectedActive());
 $('qty').onchange=render;
-$('lot').onchange=renderActiveSummary;$('process').onchange=renderActiveSummary;$('product').onchange=updateKnifeCodeInfo;
+$('lot').onchange=renderActiveSummary;$('process').onchange=renderActiveSummary;$('product').onchange=()=>{const lot=$('lot').value.trim();const known=lot&&lotRegistry[lot];if(known&&known.productCode&&known.productCode!==$('product').value){alert('このロットは別の包丁名で登録済みです。ロットを変更するか、登録済みの包丁名を使ってください。');$('product').value=known.productCode;}updateKnifeCodeInfo()};
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));$('records').classList.toggle('hidden',b.dataset.tab!=='records');$('summary').classList.toggle('hidden',b.dataset.tab!=='summary')});
-$('manualBtn').onclick=()=>{const v=prompt('バーコードの内容（例：KN003 / LOT-261012-01 / PR-03）');if(v)handleScannedCode(v.trim().toUpperCase())};
+$('manualBtn').onclick=()=>{const v=prompt('ロット番号または工程番号を入力（例：LOT-261013-01 / PR-03）');if(v)handleScannedCode(v.trim().toUpperCase())};
 async function loadScannerLibrary(){if(window.Html5Qrcode)return;if(scannerLoading)return scannerLoading;scannerLoading=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';script.onload=resolve;script.onerror=()=>reject(new Error('読み取りライブラリを読み込めません'));document.head.appendChild(script)});return scannerLoading}
 $('scanBtn').onclick=async()=>{
  if(html5QrCode){await stopScan();$('scanBtn').textContent='▦ スキャン開始';return}
@@ -161,19 +196,28 @@ $('scanBtn').onclick=async()=>{
 };
 async function handleScannedCode(code){
  if(/^KN\d{3}$/.test(code)){
-  if(!setProductCode(code)){alert('未登録の包丁番号です：'+code);return}
-  const lot=$('lot').value.trim();
-  if(lot){const known=lotRegistry[lot];if(known&&known.productCode&&known.productCode!==code){if(!confirm(`ロット ${lot} は ${known.productCode} に登録済みです。包丁番号を変更しますか？`)){setProductCode(known.productCode);return}}lotRegistry[lot]={productCode:code,productName:productLabel(code),qty:Math.max(1,Number($('qty').value)||10)};saveLotRegistry()}
-  $('activeInfo').textContent=`包丁を認識：${code} / ${productLabel(code)}。次にロット番号を読み取ってください。`;return;
+  alert('包丁番号バーコードは使いません。画面上で包丁名を選択してください。');return;
  }
  if(/^LOT[:\-]/.test(code)||/^LOT\d/.test(code)){
   const lot=code.startsWith('LOT:')?code.slice(4):code;
   if(!lot){alert('ロット番号が空です');return}
+  const activeForLot=actives.filter(a=>a.lot===lot);
+  if(activeForLot.length){
+   activeForLot.forEach(a=>finishActive(a));
+   $('lot').value=lot;
+   const known=lotRegistry[lot];
+   if(known){setProductCode(known.productCode);$('qty').value=known.qty||10;}
+   renderActiveSummary();
+   $('activeInfo').textContent=`終了・保存：${lot}。${activeForLot.length}件の工程を記録しました。`; if(window.motionFeedback)window.motionFeedback('end');
+   $('stateText').textContent='保存済み';
+   return;
+  }
   const known=lotRegistry[lot];
-  if(known){setProductCode(known.productCode);$('qty').value=known.qty||10}
-  else{
+  if(known){
+   setProductCode(known.productCode);$('qty').value=known.qty||10;
+  }else{
    const productCode=$('product').value;
-   if(!productCode){alert('新しいロットです。先に包丁番号（KN003など）を読み取ってください。');return}
+   if(!productCode){alert('新しいロットです。先に画面上で包丁名を選択してください。');return}
    lotRegistry[lot]={productCode,productName:productLabel(productCode),qty:Math.max(1,Number($('qty').value)||10)};saveLotRegistry();
   }
   $('lot').value=lot;renderActiveSummary();$('activeInfo').textContent=`対象ロット：${lot} / ${productLabel($('product').value)}。工程バーコードを読み取って作業を開始してください。`;return;
@@ -181,13 +225,13 @@ async function handleScannedCode(code){
  if(/^PR-?\d{1,2}$/.test(code)){
   if(!setProcessByCode(code)){alert('未登録の工程番号です：'+code);return}
   const lot=$('lot').value.trim();if(!lot){alert('先にロット番号のバーコードを読み取ってください。');return}
-  if(!lotRegistry[lot]){alert('ロットが登録されていません。包丁番号→ロット番号の順で読み取ってください。');return}
-  const key=lot+'||'+$('process').value;const existing=actives.find(a=>a.key===key);
-  if(existing){finishActive(existing);$('activeInfo').textContent=`記録保存：${lot} / ${existing.process} / ${fmt(existing.accumulated)}。次の工程を読み取れます。`}
-  else{startFor(lot);$('activeInfo').textContent=`作業開始：${lot} / ${$('process').value}`}
+  if(!lotRegistry[lot]){alert('このロットは未登録です。先に包丁名を選択してからロットバーコードを読み取ってください。');return}
+  const active=actives.find(a=>a.key===lot+'||'+$('process').value);
+  if(active){alert('この工程はすでに開始しています。終了するときはロット番号のバーコードを読み取ってください。');return}
+  startFor(lot);$('activeInfo').textContent=`作業開始：${lot} / ${$('process').value}。終了時はロット番号を読み取ってください。`; if(window.motionFeedback)window.motionFeedback('start');
   return;
  }
- alert(`認識できないコードです：${code}\n包丁 KN003、ロット LOT-261012-01、工程 PR-03 の形式を使ってください。`);
+ alert(`認識できないコードです：${code}\n使用するのはロット LOT-261013-01 と工程 PR-03 のバーコードです。包丁名は画面上で選択してください。`);
 }
 async function stopScan(){if(html5QrCode){try{if(html5QrCode.isScanning)await html5QrCode.stop()}catch(e){}try{await html5QrCode.clear()}catch(e){}html5QrCode=null}$('reader').replaceChildren();$('scannerBox').classList.add('hidden');$('scanBtn').disabled=false;$('scanBtn').textContent='▦ スキャン開始'}
 $('stopScan').onclick=stopScan;
@@ -202,5 +246,20 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
 </script>
+
+<script id="motion-feedback">
+(function(){
+  window.motionFeedback = function(kind){
+    const targets = ['#activeInfo','#stateText','#scanStatus','.status','.notice'];
+    let el = null;
+    for (const s of targets){ el = document.querySelector(s); if(el) break; }
+    if(!el) return;
+    el.classList.remove('is-success','is-active','is-scanning');
+    void el.offsetWidth;
+    el.classList.add(kind === 'start' ? 'is-active' : 'is-success');
+  };
+})();
+</script>
+
 </body>
 </html>
