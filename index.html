@@ -14,6 +14,11 @@ main{max-width:760px;margin:auto;padding:16px 12px 42px}.card{background:linear-
 input,select,textarea{width:100%;padding:12px;border:1px solid #35414e;border-radius:9px;background:#0d1218;font-size:16px;color:#f1f5f9;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #56d6c21a}button{border:1px solid transparent;border-radius:9px;padding:13px 12px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .12s,filter .12s}button:active{transform:scale(.985)}.primary{background:var(--accent);color:#071311}.danger{background:#ef6464;color:#210808}.secondary{background:#202a35;color:#e7edf3;border-color:#35414e}.dark{background:#e9eef3;color:#111820}.small{font-size:12px;padding:9px}.status{background:#112b2a;border:1px solid #20524d;border-radius:9px;padding:12px;margin-top:10px;font-size:13px;color:#c9fff4}.status.running{background:#302719;border-color:#66502a;color:#ffe4a5}.muted{font-size:12px;color:#9aa7b5;line-height:1.65}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#0d1319;border:1px solid #28323d;border-radius:10px;padding:11px}.metric b{display:block;font-size:20px;color:#f2f6fa;font-variant-numeric:tabular-nums}.metric span{font-size:10px;color:#9aa7b5}.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{flex:1}.tabs button.active{background:var(--accent);color:#071311;border-color:var(--accent)}table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:10px 7px;border-bottom:1px solid #28313b;vertical-align:top}th{color:#aab6c3;font-weight:650;background:#1a222b}.tablewrap{overflow-x:auto}.pill{display:inline-block;padding:4px 7px;border-radius:5px;background:#27313d;color:#dbe4ec;font-size:11px;white-space:nowrap}.pill.live{background:#4a391b;color:#ffe0a0}.hidden{display:none!important}#reader{width:100%;overflow:hidden;border-radius:10px;margin-top:10px}#reader video{width:100%}footer{text-align:center;color:#748291;font-size:10px;padding:12px;letter-spacing:.04em}a{color:var(--accent)}
 @media(max-width:430px){.metrics{grid-template-columns:repeat(3,1fr)}.metric b{font-size:17px}.row.stack{flex-direction:column}main{padding:12px 10px 32px}.card{padding:14px;border-radius:12px}}
 details summary{cursor:pointer;font-size:14px;font-weight:700;padding:4px 0;color:#dbe4ec;list-style-position:inside}details[open] summary{margin-bottom:14px;color:var(--accent)}.compact-card{padding:12px 14px}.card h2{margin-bottom:10px}#manualBtn{font-size:12px;padding:10px}.status{font-weight:650}header{padding-top:14px;padding-bottom:12px}main{padding-top:10px}
+
+/* ロット・工程は通常時は隠し、バーコード読取後に作業状況へ表示 */
+.row:has(#lot) > div:first-child { display:none !important; }
+label[for="lot"], #lot, label[for="process"], #process { display:none !important; }
+
 </style>
 
 <style id="motion-enhancements">
@@ -71,7 +76,7 @@ input:focus, select:focus, textarea:focus {
  <button id="manualBtn" class="secondary">コード手入力</button>
 </div>
 <div id="scannerBox" class="hidden"><div id="reader"></div><button id="stopScan" class="secondary small" style="margin-top:8px">カメラを閉じる</button></div>
-<p class="muted">包丁を選ぶ → ロットを読む → 工程を読む。終了時は同じロットをもう一度読みます。</p>
+<p class="muted">包丁名を選択 → バーコードをスキャン。読み取ったロット・工程は作業状況に表示されます。終了時は同じロットを再スキャン。</p>
 </section>
 
 <section class="card compact-card">
