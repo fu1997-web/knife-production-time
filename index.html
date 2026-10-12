@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#172b4d">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>10丁 製造時間管理</title>
+<title>生産時間管理</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#172033;background:#f3f5f8}
 *{box-sizing:border-box}body{margin:0}header{background:#172b4d;color:white;padding:18px 16px 16px;position:sticky;top:0;z-index:3}
@@ -29,7 +29,7 @@ footer{text-align:center;color:#7b8798;font-size:11px;padding:10px}
 </style>
 </head>
 <body>
-<header><h1>10丁 製造時間管理</h1><p>ロット単位で工程ごとの実作業時間を記録</p></header>
+<header><h1>生産時間管理</h1><p>ロット単位で工程ごとの実作業時間を記録</p></header>
 <main>
 <section class="card">
 <h2>① ロットを選択</h2>
@@ -80,7 +80,7 @@ footer{text-align:center;color:#7b8798;font-size:11px;padding:10px}
 <div class="row stack" style="margin-top:12px"><button id="csv" class="dark">CSVを書き出す</button><button id="backup" class="secondary">データをバックアップ</button><button id="restoreBtn" class="secondary">バックアップを読込</button><input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></div>
 <p class="muted">記録はこのブラウザ内に保存されます。端末・ブラウザのデータ削除や機種変更で消える可能性があるため、定期的にバックアップしてください。</p>
 </section>
-<footer>製造時間管理・実用版パッケージ 1.1</footer>
+<footer>製造時間管理・実用版パッケージ 1.2（QR・バーコード読取対応）</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -135,17 +135,56 @@ $('finish').onclick=()=>{
 $('qty').onchange=render;
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));$('records').classList.toggle('hidden',b.dataset.tab!=='records');$('summary').classList.toggle('hidden',b.dataset.tab!=='summary')});
 $('manualBtn').onclick=()=>{const v=prompt('ロットIDまたはバーコードの内容を入力');if(v)$('lot').value=v.trim()};
+let html5QrCode=null, scannerLoading=null;
+async function loadScannerLibrary(){
+ if(window.Html5Qrcode)return;
+ if(scannerLoading)return scannerLoading;
+ scannerLoading=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');
+  script.src='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+  script.onload=resolve;script.onerror=()=>reject(new Error('ライブラリを読み込めません'));
+  document.head.appendChild(script);
+ });
+ return scannerLoading;
+}
 $('scanBtn').onclick=async()=>{
  $('scannerBox').classList.remove('hidden');
- if(!('BarcodeDetector'in window)){alert('このブラウザではカメラのバーコード自動読取に対応していません。コード入力を使うか、対応ブラウザでHTTPS公開してください。');return}
+ $('reader').innerHTML='<p class="muted">カメラを準備しています…</p>';
+ $('scanBtn').disabled=true;
  try{
-  detector=new BarcodeDetector({formats:['qr_code','code_128','ean_13','ean_8','code_39','upc_a','upc_e']});
-  scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
-  const video=document.createElement('video');video.setAttribute('playsinline','');video.autoplay=true;video.srcObject=scanStream;$('reader').replaceChildren(video);await video.play();
-  scanner=setInterval(async()=>{try{const codes=await detector.detect(video);if(codes.length){$('lot').value=codes[0].rawValue.trim();stopScan()}}catch(e){}},400);
- }catch(e){alert('カメラを起動できません。カメラ権限とHTTPS接続を確認してください。')}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('カメラを使えません。SafariでHTTPSのアプリURLを開いてください。');
+  await loadScannerLibrary();
+  $('reader').innerHTML='';
+  html5QrCode=new Html5Qrcode('reader', {formatsToSupport:[
+   Html5QrcodeSupportedFormats.QR_CODE,
+   Html5QrcodeSupportedFormats.CODE_128,
+   Html5QrcodeSupportedFormats.CODE_39,
+   Html5QrcodeSupportedFormats.CODE_93,
+   Html5QrcodeSupportedFormats.EAN_13,
+   Html5QrcodeSupportedFormats.EAN_8,
+   Html5QrcodeSupportedFormats.UPC_A,
+   Html5QrcodeSupportedFormats.UPC_E,
+   Html5QrcodeSupportedFormats.ITF
+  ], verbose:false});
+  await html5QrCode.start({facingMode:'environment'}, {fps:10,qrbox:{width:250,height:150},aspectRatio:1.5}, (decodedText)=>{
+   $('lot').value=decodedText.trim();
+   stopScan();
+   alert('読み取りました：'+decodedText.trim());
+  }, ()=>{});
+ }catch(e){
+  $('reader').innerHTML='';
+  alert('読み取りを開始できませんでした。Safariでアプリを開き、カメラの使用を許可してください。通信環境も確認してください。詳細：'+(e.message||e));
+  $('scannerBox').classList.add('hidden');
+ }finally{$('scanBtn').disabled=false}
 };
-function stopScan(){if(scanner){clearInterval(scanner);scanner=null}if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}$('reader').replaceChildren();$('scannerBox').classList.add('hidden')}
+async function stopScan(){
+ if(html5QrCode){
+  try{if(html5QrCode.isScanning)await html5QrCode.stop();}catch(e){}
+  try{await html5QrCode.clear();}catch(e){}
+  html5QrCode=null;
+ }
+ $('reader').replaceChildren();$('scannerBox').classList.add('hidden');$('scanBtn').disabled=false;
+}
 $('stopScan').onclick=stopScan;
 $('csv').onclick=()=>{
  const rows=[['ロットID','商品名','数量','工程','開始日時','終了日時','作業時間(秒)','作業時間(分)','メモ'],...records.map(r=>[r.lot,r.product,r.qty,r.process,dt(r.start),dt(r.end),r.seconds,(r.seconds/60).toFixed(2),r.memo])];

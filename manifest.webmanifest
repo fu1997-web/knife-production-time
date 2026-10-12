@@ -1,6 +1,6 @@
 {
-  "name": "10丁単位 製造時間管理",
-  "short_name": "製造時間管理",
+  "name": "生産時間管理",
+  "short_name": "生産時間管理",
   "description": "刃物製造のロット別・工程別作業時間記録",
   "start_url": "./index.html",
   "scope": "./",
